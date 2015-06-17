@@ -18,6 +18,9 @@
     "comp",
     "builder"
   ],
+  "engines": {
+    "node": "0.12.4"
+  },
   "author": "Jinesh Desai",
   "license": "ISC",
   "bugs": {
