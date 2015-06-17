@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="teamcomp.css">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+	<script src="backend.js"></script>
+	<head>
+		<title> Team Composition Builder </title>
+	</head>
+	<body>
+		<div id="header"> Team Composition Builder </div>
+		<div id="teammateForm">
+			<div class="teammateTextEntry">
+				<label class="txtLabel"> Summoner 1 </label><input id="p1id_txt" type="text"/>
+			</div>
+			<div class="teammateTextEntry">
+				<label class="txtLabel"> Summoner 2 </label><input id="p2id_txt" type="text"/>
+			</div>
+			<div class="teammateTextEntry">
+				<label class="txtLabel"> Summoner 3 </label><input id="p3id_txt" type="text"/>
+			</div>
+			<div class="teammateTextEntry">
+				<label class="txtLabel"> Summoner 4 </label><input id="p4id_txt" type="text"/>
+			</div>
+			<div class="teammateTextEntry">
+				<label class="txtLabel"> Summoner 5 </label><input id="p5id_txt" type="text"/>
+			</div>
+		</div>
+		<div id="submissionButton">
+			<button class="btn btn-success btn-lg" id="submit_btn"> Build Team! </button>
+		</div>
+		<div id="recommendedChamps" style="float:left">
+		</div>
+	</body>
+</html>

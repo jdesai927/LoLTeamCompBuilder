@@ -1,0 +1,36 @@
+#header {
+	text-align: center;
+	font-size: 36pt;
+	padding: 5px;
+}
+
+.teammateTextEntry {
+	margin-left: 20px;
+	padding: 20px;
+	font-size: 18pt;
+}
+
+#submissionButton {
+	text-align: center;
+	float: left;
+	margin-left: 100px;
+	margin-top: 180px;
+}
+
+#teammateForm {
+	float: left;
+}
+
+#recommendedChamps {
+	margin-left: 100px;
+}
+
+.champImg {
+	width: 80px;
+	height: 80px;
+	padding: 10px;
+}
+
+.txtLabel {
+	margin-right: 20px;
+}
