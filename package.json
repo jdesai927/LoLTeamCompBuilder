@@ -1,0 +1,27 @@
+{
+  "name": "teamselect",
+  "version": "1.0.0",
+  "description": "League of Legends team composition builder.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jdesai927/LoLTeamCompBuilder.git"
+  },
+  "keywords": [
+    "league",
+    "legends",
+    "team",
+    "composition",
+    "comp",
+    "builder"
+  ],
+  "author": "Jinesh Desai",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jdesai927/LoLTeamCompBuilder/issues"
+  },
+  "homepage": "https://github.com/jdesai927/LoLTeamCompBuilder#readme"
+}
