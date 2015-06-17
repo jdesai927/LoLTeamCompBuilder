@@ -92,6 +92,7 @@ function getStatsForPlayers(summonerNames) {
 	}) //GET summoner objects
 	*/
 
+	//Summoners object hardcoded to get around API limit
 	var summoners = {"cowcurler":{"id":31252802,"name":"Cowcurler","profileIconId":588,"summonerLevel":30,"revisionDate":1431399790000},"stealthpoop":{"id":31500123,"name":"Stealthpoop","profileIconId":772,"summonerLevel":30,"revisionDate":1434358184000},"eulersidentity":{"id":36698943,"name":"Eulers Identity","profileIconId":539,"summonerLevel":30,"revisionDate":1434427672000},"potateo":{"id":34621554,"name":"poTATEo","profileIconId":663,"summonerLevel":30,"revisionDate":1434145661000},"imajineshion":{"id":39593946,"name":"Imajineshion","profileIconId":785,"summonerLevel":30,"revisionDate":1433310655000}}
 	var getBestChamps = function(summoners) {
 		var summonerIds = _.map(_.values(summoners), function(dto) { 
@@ -199,11 +200,14 @@ var createTeamComp = function(bestChamps) {
 }
 
 $(document).ready(function() {
+	/*
+	Hardcoded testing values
 	$("#p1id_txt").val("Imajineshion")
 	$("#p2id_txt").val("poTATEo")
 	$("#p3id_txt").val("Cowcurler")
 	$("#p4id_txt").val("Eulers Identity")
 	$("#p5id_txt").val("Stealthpoop")
+	*/
 	$("#submit_btn").click(function() {
 		var summonerNames = ""
 		for (i = 1; i < 6; i++) {
