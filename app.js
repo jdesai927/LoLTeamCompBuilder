@@ -1,3 +1,9 @@
 var connect = require('connect')
 var serveStatic = require('serve-static')
-connect().use(serveStatic(__dirname)).listen(process.env.PORT || 5000)
+var http = require('http')
+
+var app = connect()
+
+app.use(serveStatic(__dirname))
+
+http.createServer(app).listen(process.env.PORT || 5000)
