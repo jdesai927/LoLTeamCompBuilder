@@ -35,7 +35,7 @@ function constructChampApiUrl(champId) {
 	return "https://global.api.pvp.net/api/lol/static-data/"
 	     + REGION + "/v1.2/champion/"
 	     + champId
-	     + "?champData=image,tags&"
+	     + "?champData=image&"
 	     + API_KEY_QS
 }
 
@@ -57,16 +57,16 @@ function championScore(champ) {
 
 var roleSortingValue = function(champ) {
 	switch(champ.role) {
-		case "middle":
-			return 2;
 		case "top":
 			return 0;
-		case "support":
-			return 4;
-		case "adc":
-			return 3;
 		case "jungle":
 			return 1;
+		case "middle":
+			return 2;
+		case "adc":
+			return 3;
+		case "support":
+			return 4;
 	}
 }
 
@@ -125,10 +125,9 @@ function getStatsForPlayers(summonerNames) {
 							champReqs.push($.get(champUrl, function(champ) {
 								bestChamps[nameTable[data.summonerId]].push({id: champ.id, 
 																  name: champ.name,
-																  tags: champ.tags,
 																  score: championScore(rankedStats[k]),
 																  image: champ.image.full,
-																  roles: []})
+																  roles: {}})
 							}))
 						})(j)
 				}
@@ -142,7 +141,11 @@ function getStatsForPlayers(summonerNames) {
 							var champObj = _.findWhere(bestChamps[nameTable[data.summonerId]], {id: match.participants[0].championId})
 							var role = lane != "BOT" && lane != "BOTTOM" ? lane.toLowerCase() :
 									   match.participants[0].timeline.role == "DUO_CARRY" ? "adc" : "support"
-							if (!_.contains(champObj.roles, role)) champObj.roles.push(role)
+							if (!champObj.roles[role]) {
+								champObj.roles[role] = 1
+							} else {
+								champObj.roles[role]++
+							}
 						})
 						if (historyCount == 0) {
 							var bestTeam = createTeamComp(bestChamps)
@@ -173,8 +176,9 @@ var addChamp = function(rolesLeft, summonersLeft, totalScore, team, bestChamps) 
 	var champs = bestChamps[summoner]
 	var bestTeams = []
 	_.each(champs, function(champ, ind, l) {
+		if (_.findWhere(team, {name: champ.name})) { return }
 		var summonerName = summoner
-		var roles = _.intersection(champ.roles, rolesLeft)
+		var roles = _.intersection(_.keys(champ.roles), rolesLeft)
 		if (roles.length == 0) { return }
 		var possibleTeams = []
 		_.each(roles, function(role, ind2, l2) {
@@ -184,7 +188,7 @@ var addChamp = function(rolesLeft, summonersLeft, totalScore, team, bestChamps) 
 			newTeam.push({name: champ.name, role: role, image: champ.image, summoner: summonerName})
 			var tm = addChamp(newRolesLeft, 
 				       		  summonersLeft.slice(0), 
-				 			  champ.score + totalScore,
+				 			  (champ.roles[role] * champ.score) + totalScore,
 				     		  newTeam,
 				     		  bestChamps)
 			if (tm) { possibleTeams.push(tm) }
@@ -221,11 +225,17 @@ $(document).ready(function() {
 	
 	$("#submit_btn").click(function() {
 		var summonerNames = ""
+		var names = []
 		for (i = 1; i < 6; i++) {
 			var sn = $("#p" + i.toString() + "id_txt").val()
 			if (sn === "") continue
+			if (names.indexOf(sn) >= 0) {
+				console.log("Error: duplicate summoner name entered. Exiting...")
+				return
+			}
 			if (i != 1) summonerNames += ","
 			summonerNames += sn
+			names.push(sn)
 		}
 		getStatsForPlayers(summonerNames)
 	})
