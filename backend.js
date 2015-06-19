@@ -217,11 +217,13 @@ var createTeamComp = function(bestChamps) {
 $(document).ready(function() {
 	
 	//Hardcoded testing values
+	/*
 	$("#p1id_txt").val("Imajineshion")
 	$("#p2id_txt").val("C9 Sneaky")
 	$("#p3id_txt").val("Potateo")
 	$("#p4id_txt").val("Doublelift")
 	$("#p5id_txt").val("imaqtpie")
+	*/
 	
 	$("#submit_btn").click(function() {
 		var summonerNames = ""
