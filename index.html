@@ -1,42 +1,75 @@
 <!DOCTYPE html>
 <html>
-	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-	<link rel="stylesheet" type="text/css" href="teamcomp.css">
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
-	<script src="backend.js"></script>
-	<script src="teampanel.js"></script>
 	<head>
-		<title> Team Composition Builder </title>
+		<link href='http://fonts.googleapis.com/css?family=Patua+One|Khand' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Rubik:300' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" href="res/styles/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="res/styles/teamcomp.css">
+		<script src="lib/jquery-1.11.3.min.js"></script>
+		<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+		<script src="lib/underscore-min.js"></script>
+		<script src="lib/knockout-3.3.0.js"></script>
+		<script src="scripts/viewmodel.js"></script>
+		<title> Doran's Coach </title>
 	</head>
 	<body>
-		<div id="header"> Team Composition Builder </div>
-		<div id="teammateForm">
-			<div class="teammateTextEntry">
-				<label class="txtLabel"> Summoner 1 </label><input id="p1id_txt" type="text"/>
+		<div class="container-fluid">
+			<h1 class="mainHeader text-center"> DORAN'S COACH </h1>
+			<h3 class="subtitle text-center"> DEVISE STRATEGIES FOR YOUR TEAM BASED ON STATISTICAL ANALYSIS. </h3>
+			<div class="row bluebg">
+				<div class="col-xs-3"></div>
+				<div class="col-xs-6">
+					<div class="formPanel" id="regionPanel">
+						<div id="regionSelect">
+							<select data-bind="options: regions, value: selectedRegion, optionsCaption: 'Select region...'"></select>
+						</div>
+						<div id="regionSubmit">
+							<button class="btn btn-lg btn-action" data-bind="click: setRegion"> 	CHOOSE TEAMMATES
+							</button>
+						</div>
+					</div>
+					<div class="formPanel" id="teammatePanel">
+						<div data-bind="foreach: summoners">
+							<div class="teammateTextEntry">
+								<input class="summonerInput" data-bind="textInput: name, attr: {id: 'p' + ($index() + 1) + 'id_txt'}" type="text"/>
+							</div>
+						</div>
+						<div id="teammateSubmit">
+							<button class="btn btn-action btn-lg" data-bind="click: buildTeam" id="submit_btn"> ANALYZE </button>
+						</div>
+					</div>
+					<div class="formPanel" id="teamPanel">
+						<div id="team1" class="recommendedTeam">
+							<div data-bind="foreach: bestTeam">
+								<div class="summonerRec" data-bind="attr: {id: 's' + ($index() + 1) + 'Champ'}">
+									<span data-bind="text: summoner + ': '"></span>
+									<img class="champImg" data-bind="attr: {src: constructChampImgUrl(image), alt: name}">
+									<span data-bind="text: ' ' + role"></span>
+								</div>
+							</div>
+						</div>
+						<div id="team2" class="recommendedTeam">
+							<div data-bind="foreach: bestTeam">
+								<div class="summonerRec" data-bind="attr: {id: 's' + ($index() + 1) + 'Champ'}">
+									<span data-bind="text: summoner + ': '"></span>
+									<img class="champImg" data-bind="attr: {src: constructChampImgUrl(image), alt: name}">
+									<span data-bind="text: ' ' + role"></span>
+								</div>
+							</div>
+						</div>
+						<div id="team3" class="recommendedTeam">
+							<div data-bind="foreach: bestTeam">
+								<div class="summonerRec" data-bind="attr: {id: 's' + ($index() + 1) + 'Champ'}">
+									<span data-bind="text: summoner + ': '"></span>
+									<img class="champImg" data-bind="attr: {src: constructChampImgUrl(image), alt: name}">
+									<span data-bind="text: ' ' + role"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-3"></div>
 			</div>
-			<div class="teammateTextEntry">
-				<label class="txtLabel"> Summoner 2 </label><input id="p2id_txt" type="text"/>
-			</div>
-			<div class="teammateTextEntry">
-				<label class="txtLabel"> Summoner 3 </label><input id="p3id_txt" type="text"/>
-			</div>
-			<div class="teammateTextEntry">
-				<label class="txtLabel"> Summoner 4 </label><input id="p4id_txt" type="text"/>
-			</div>
-			<div class="teammateTextEntry">
-				<label class="txtLabel"> Summoner 5 </label><input id="p5id_txt" type="text"/>
-			</div>
-		</div>
-		<div id="submissionButton">
-			<button class="btn btn-success btn-lg" id="submit_btn"> Build Team! </button>
-		</div>
-		<div id="recommendedChamps" style="float:left">
-			<div></div>
-			<div></div>
-			<div></div>
-			<div></div>
-			<div></div>
 		</div>
 	</body>
 </html>

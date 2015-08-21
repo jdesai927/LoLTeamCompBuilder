@@ -1,0 +1,116 @@
+@font-face {
+	font-family: frizQuadrata;
+	src: url(../fonts/FrizQuadrataRegular.ttf);
+}
+
+body {
+	background-color: #3B5998;
+}
+
+.mainHeader {
+	color: white;
+	font-family: 'Patua One';
+	padding-top: 10px;
+	font-size: 40pt;
+}
+
+.subtitle {
+	padding-bottom: 25px;
+	font-size: 18pt;
+	color: white;
+	font-family: 'Khand';
+}
+
+.bluebg {
+	background-image: url(../img/champs.jpg);
+}
+
+.btn:hover {
+	color: white !important;
+}
+
+.btn {
+	border-radius: 0 !important;
+}
+
+.btn-action {
+	background-color: #DDB500;
+	color: white;
+	font-family: 'Khand';
+	font-weight: bold;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+#submissionButton {
+	text-align: center;
+}
+
+.formPanel {
+	padding-top: 50px;
+	padding-bottom: 50px;
+	text-align: center;
+	
+}
+
+#regionSelect {
+	margin-top: 100px;
+	margin-bottom: 100px;
+}
+
+.summonerInput
+{
+	background:#F8F8F8;
+	color: black;
+	border:2px solid #DCDCDC;
+	border-radius:0px ;
+	font-size:16px ;
+	height: 30px ;
+	line-height:30px ;
+	width: 200px;
+	font-family: 'Verdana';
+	box-shadow: 1px 1px 1px #DCDCDC;
+	-webkit-box-shadow: 1px 1px 1px #DCDCDC;
+	-moz-box-shadow: 1px 1px 1px #DCDCDC;
+}
+
+#teammatePanel {
+	display: none;
+}
+
+.txtLabel {
+	margin-right: 20px;
+}
+
+.teammateTextEntry {
+	margin-left: 20px;
+	padding-bottom: 20px;
+	font-size: 18pt;
+}
+
+#teamPanel {
+	display: none;
+}
+
+.recommendedTeam {
+	float: left;
+}
+
+.summonerRec {
+	text-align: center;
+	width: 150px;
+	color: black;
+	font-family: 'Khand';
+	height: 50px;
+	border-width: 5px;
+	border-color: rgb(218,165,32);
+	margin: 5px;
+	padding: 5px;
+	background-color: rgb(220, 220, 180);
+}
+
+.champImg {
+	width: 40px;
+	height: 40px;
+	padding: 7px;
+}

@@ -1,8 +1,14 @@
 var API_KEY_QS = "api_key=99bad429-1842-4b8c-8264-cff3289b807c"
-var NUM_MATCHHISTORY_CALLS = 2
-var REGION = "na"
+var NUM_MATCHHISTORY_CALLS = 1
+var REGIONS_URL = "http://status.leagueoflegends.com/shards"
+var REGION = null
 var CHAMPS_PER_SUMMONER = 10
-var BASE_URL = "https://" + REGION + ".api.pvp.net/api/lol/" + REGION + "/"
+
+var champWallpapers = ["../res/img/braum.jpg", "../res/img/orianna.jpg", "../res/img/baron.jpg"]
+
+function makeBaseUrl() {
+	return "https://" + REGION + ".api.pvp.net/api/lol/" + REGION + "/"
+}
 
 function listToCommaString(list) {
 	var commaString = ""
@@ -16,7 +22,7 @@ function listToCommaString(list) {
 }
 
 function constructSummonerApiUrl(names) {
-	return BASE_URL
+	return makeBaseUrl()
 	     + "v1.4/summoner/by-name/" 
 	     + names 
 	     + "?"
@@ -24,7 +30,7 @@ function constructSummonerApiUrl(names) {
 }
 
 function constructStatsApiUrl(summonerId) {
-	return BASE_URL
+	return makeBaseUrl()
 		 + "v1.3/stats/by-summoner/"
 		 + summonerId 
 		 + "/ranked?"
@@ -40,7 +46,7 @@ function constructChampApiUrl(champId) {
 }
 
 function constructHistoryApiUrl(summonerId, champIds, ind) {
-	return BASE_URL 
+	return makeBaseUrl()
 	     + "v2.2/matchhistory/" + summonerId
 	     + "?championIds=" + champIds
 	     + "&rankedQueues=RANKED_SOLO_5x5&beginIndex=" + ind.toString() + "&endIndex=" + (ind + 15).toString() + "&"
@@ -70,31 +76,7 @@ var roleSortingValue = function(champ) {
 	}
 }
 
-function showChamp(champ, delay) {
-	var divId = "#s" + (i + 1).toString() + "Champ"
-	var divContents = champ.summoner + 
-					  " plays <img alt=\"" + champ.name + 
-					  "\" class=\"champImg\" src=\"" + 
-					  constructChampImgUrl(champ.image) + "\">" + 
-					  " " + champ.role
-	if ($(divId).is(":visible")) {
-		$(divId).fadeOut(400, function() {
-			$(divId).html(divContents)
-		})
-	} else {
-		$(divId).html(divContents)
-	}
-	$(divId).delay(delay).fadeIn(500)
-}
-
-function printTeam(teamObj) {
-	teamObj.team = _.sortBy(teamObj.team, roleSortingValue)
-	for (i = 0; i < 5; i++) {
-		showChamp(teamObj.team[i], i * 300)
-	}
-}
-
-var addChamp = function(rolesLeft, summonersLeft, totalScore, team, bestChamps) {
+var addChamp = function(rolesLeft, summonersLeft, totalScore, team, bestChamps, oldTeam) {
 	if (rolesLeft.length == 0) return {team: team, score: totalScore}
 	var summoner = summonersLeft.pop()
 	var champs = bestChamps[summoner]
@@ -106,6 +88,7 @@ var addChamp = function(rolesLeft, summonersLeft, totalScore, team, bestChamps) 
 		if (roles.length == 0) { return }
 		var possibleTeams = []
 		_.each(roles, function(role, ind2, l2) {
+			if (_.findWhere(oldTeam, {role: champ.role, name: champ.name, summoner: summonerName})) { return }
 			var newRolesLeft = rolesLeft.slice(0)
 			newRolesLeft.splice(newRolesLeft.indexOf(role), 1)
 			var newTeam = team.slice(0)
@@ -115,7 +98,8 @@ var addChamp = function(rolesLeft, summonersLeft, totalScore, team, bestChamps) 
 				       		  summonersLeft.slice(0), 
 				 			  (champ.roles[role] * champ.score) + totalScore,
 				     		  newTeam,
-				     		  bestChamps)
+				     		  bestChamps,
+				     		  oldTeam)
 			if (tm) { possibleTeams.push(tm) }
 		})
 		if (possibleTeams.length != 0) {
@@ -131,28 +115,64 @@ var addChamp = function(rolesLeft, summonersLeft, totalScore, team, bestChamps) 
 	return bestTeam
 }
 
-var createTeamComp = function(bestChamps) {
+var createTeamComp = function(bestChamps, oldTeam) {
 	return addChamp(["middle","top","jungle","adc","support"], 
 		             _.keys(bestChamps), 
 		             0, 
 		             [], 
-		             bestChamps)
+		             bestChamps,
+		             oldTeam)
 }
 
 function TeamCompBuilderViewModel() {
 	var self = this
 
 	self.summoners = ko.observableArray([{name: "Imajineshion"},
-					  					 {name: "C9 Sneaky"},
+					  					 {name: "Imaqtpie"},
 					  					 {name: "poTATEo"},
 					  					 {name: "Doublelift"},
-					  					 {name: "Imaqtpie"}])
+					  					 {name: "C9 Sneaky"}])
 
 	self.bestTeam = ko.observableArray([])
 
-	self.target = document.getElementById('loadingSpinner')
+	self.regions = ko.observableArray(["NA",
+									   "EUW",
+									   "EUNE",
+									   "KR",
+									   "OCE",
+									   "LAN",
+									   "LAS",
+									   "BR",
+									   "TR",
+									   "RU"])
+
+	self.selectedRegion = ko.observable()
+
+	$(".recommendedTeam").click(function() {
+		console.log("Team clicked!")
+	})
 	
-	self.spinner = ko.observable(new Spinner())
+	self.currentPanel = ko.observable("#regionPanel")
+
+	self.showPanel = function(panel, img) {
+		$(self.currentPanel()).toggle("slide", {direction: 'left'}, function() {
+			$(panel).toggle("slide", {direction: 'right'})
+			$('.bluebg').fadeTo('slow', 0.3, function()
+			{
+    			$(this).css('background-image', 'url(' + img + ')');
+			}).fadeTo('slow', 1)
+			self.currentPanel(panel)	
+		})
+	}
+
+	self.setRegion = function() {
+		if (!self.selectedRegion()) {
+			alert("Error: no region selected.")
+			return
+		}
+		REGION = self.selectedRegion().toLowerCase()
+		self.showPanel("#teammatePanel", champWallpapers[Math.floor(Math.random() * champWallpapers.length)])
+	}
 
 	self.getStatsForPlayers = function(summonerNames) {
 	
@@ -218,9 +238,11 @@ function TeamCompBuilderViewModel() {
 								}
 							})
 							if (historyCount == 0) {
-								var bestTeam = createTeamComp(bestChamps)
-								self.spinner().stop()
+								console.log("Done looking up histories.")
+								var bestTeam = createTeamComp(bestChamps, [])
 								self.bestTeam(_.sortBy(bestTeam.team, roleSortingValue))
+								var nextBestTeam = _.sortBy(createTeamComp(bestChamps, bestTeam).team, roleSortingValue)
+								console.log(JSON.stringify(nextBestTeam, null, 2))
 							}
 						}
 						for (a = 0; a < NUM_MATCHHISTORY_CALLS; a++) {
@@ -232,7 +254,7 @@ function TeamCompBuilderViewModel() {
 			$.when.apply($, statsReqs).done(function() {
 				console.log("retrieved all stats")
 				$.when.apply($, historyReqs).done(function() {
-				
+
 				})
 			})
 		}
@@ -242,18 +264,15 @@ function TeamCompBuilderViewModel() {
 	}	
 
 	self.buildTeam = function() {
-		self.spinner().spin(self.target)
 		var summonerNames = ""
 		var names = []
 		for (i = 0; i < 5; i++) {
 			var sn = self.summoners()[i].name
 			if (sn === "") {
-				$("#p" + (i + 1) + "id_txt").addClass("ui-state-error")
 				console.log("Error: not all 5 summoners entered. Exiting...")
 				return
 			}
 			if (names.indexOf(sn) >= 0) {
-				$("#p" + (i + 1) + "id_txt").addClass("ui-state-error")
 				console.log("Error: duplicate summoner name entered. Exiting...")
 				return
 			}
@@ -261,6 +280,7 @@ function TeamCompBuilderViewModel() {
 			summonerNames += sn
 			names.push(sn)
 		}
+		self.showPanel("#teamPanel", champWallpapers[Math.floor(Math.random() * champWallpapers.length)])
 		self.getStatsForPlayers(summonerNames)
 	}
 }
